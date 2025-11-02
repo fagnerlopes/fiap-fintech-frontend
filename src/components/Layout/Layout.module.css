@@ -1,0 +1,27 @@
+.layout {
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.main {
+  margin-left: 16rem;
+  margin-top: 4rem;
+  padding: 2rem;
+  min-height: calc(100vh - 4rem);
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Responsividade - Mobile */
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 1rem;
+  }
+}
+
