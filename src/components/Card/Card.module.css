@@ -1,0 +1,27 @@
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.header {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.content {
+  padding: 1.5rem;
+  padding-top: 0;
+}
+

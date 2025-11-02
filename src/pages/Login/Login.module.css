@@ -1,0 +1,76 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.content {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.logo {
+  text-align: center;
+  color: white;
+}
+
+.logo h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.05em;
+}
+
+.logo p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.card {
+  width: 100%;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.error {
+  padding: 0.75rem 1rem;
+  background-color: oklch(0.577 0.245 27.325 / 0.1);
+  border: 1px solid var(--destructive);
+  border-radius: var(--radius);
+  color: var(--destructive);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error svg {
+  flex-shrink: 0;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .logo h1 {
+    font-size: 2rem;
+  }
+
+  .container {
+    padding: 0.5rem;
+  }
+}
+

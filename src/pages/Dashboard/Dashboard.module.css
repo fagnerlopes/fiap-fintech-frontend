@@ -1,0 +1,113 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.header {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--card);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.headerContent {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerContent h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userName {
+  font-size: 0.875rem;
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.welcome {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.welcome h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.welcome p {
+  font-size: 1rem;
+  color: var(--muted-foreground);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.cardText {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.userCard {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.userDetails strong {
+  color: var(--foreground);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .headerContent h1 {
+    font-size: 1.25rem;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .welcome h2 {
+    font-size: 1.5rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
