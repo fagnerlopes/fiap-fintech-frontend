@@ -14,6 +14,23 @@
   color: var(--muted-foreground);
 }
 
+.error {
+  padding: 1rem;
+  background-color: oklch(0.577 0.245 27.325 / 0.1);
+  border: 1px solid var(--destructive);
+  border-radius: var(--radius);
+  color: var(--destructive);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.error svg {
+  flex-shrink: 0;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -21,26 +38,68 @@
   margin-bottom: 2rem;
 }
 
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitleRow svg {
+  width: 24px;
+  height: 24px;
+  opacity: 0.5;
+}
+
+.cardReceitas .cardTitleRow svg {
+  color: var(--chart-2);
+}
+
+.cardDespesas .cardTitleRow svg {
+  color: var(--destructive);
+}
+
+.cardSaldo .cardTitleRow svg {
+  color: var(--primary);
+}
+
+.valor {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.valor.positivo {
+  color: oklch(0.65 0.20 145); /* Verde vibrante */
+}
+
+.valor.negativo {
+  color: var(--destructive); /* Vermelho */
+}
+
 .cardText {
   color: var(--muted-foreground);
   font-size: 0.875rem;
 }
 
-.userCard {
-  max-width: 600px;
-}
-
-.userDetails {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.loading {
+  color: var(--muted-foreground);
   font-size: 0.875rem;
+  padding: 1rem 0;
 }
 
-.userDetails strong {
-  color: var(--foreground);
-  font-weight: 600;
-  margin-right: 0.5rem;
+/* Destaque visual nos cards */
+.cardReceitas {
+  border-left: 4px solid var(--chart-2);
+}
+
+.cardDespesas {
+  border-left: 4px solid var(--destructive);
+}
+
+.cardSaldo {
+  border-left: 4px solid var(--primary);
 }
 
 /* Responsividade */
@@ -51,5 +110,9 @@
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .valor {
+    font-size: 1.75rem;
   }
 }
