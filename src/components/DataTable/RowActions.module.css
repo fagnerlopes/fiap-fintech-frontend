@@ -1,99 +1,39 @@
 .container {
-  position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.trigger {
+.button {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
+  padding: 0;
   border: none;
   background: none;
-  color: var(--muted-foreground);
+  color: oklch(var(--muted-foreground));
   border-radius: var(--radius);
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
 
-.trigger:hover {
-  background-color: var(--accent);
-  color: var(--foreground);
+.button:hover {
+  background-color: oklch(var(--accent));
+  color: oklch(var(--accent-foreground));
 }
 
-.dropdown {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 0.25rem);
-  min-width: 160px;
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  z-index: 50;
-  animation: slideDown 0.15s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.action {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.625rem 1rem;
-  border: none;
-  background: none;
-  color: var(--foreground);
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.action:first-child {
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.action:last-child {
-  border-radius: 0 0 var(--radius) var(--radius);
-}
-
-.action:hover {
-  background-color: var(--accent);
-}
-
-.action svg {
-  flex-shrink: 0;
+.button svg {
   width: 16px;
   height: 16px;
-  color: var(--muted-foreground);
 }
 
-.action:hover svg {
-  color: currentColor;
+.button.destructive {
+  color: oklch(var(--destructive));
 }
 
-.destructive {
-  color: var(--destructive);
-}
-
-.destructive svg {
-  color: var(--destructive);
-}
-
-.destructive:hover {
+.button.destructive:hover {
   background-color: oklch(0.577 0.245 27.325 / 0.1);
+  color: oklch(var(--destructive));
 }
-
