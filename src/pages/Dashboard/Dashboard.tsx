@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, DollarSign, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Layout } from '../../components/Layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/Card/Card';
@@ -67,18 +68,7 @@ export function Dashboard() {
 
       {error && (
         <div className={styles.error}>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 1.5C4.41 1.5 1.5 4.41 1.5 8C1.5 11.59 4.41 14.5 8 14.5C11.59 14.5 14.5 11.59 14.5 8C14.5 4.41 11.59 1.5 8 1.5Z"
-              fill="currentColor"
-            />
-          </svg>
+          <AlertCircle size={16} />
           {error}
         </div>
       )}
@@ -88,21 +78,7 @@ export function Dashboard() {
           <CardHeader>
             <div className={styles.cardTitleRow}>
               <CardTitle>Receitas</CardTitle>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 5V19M5 12L12 5L19 12"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <TrendingUp size={24} />
             </div>
           </CardHeader>
           <CardContent>
@@ -121,21 +97,7 @@ export function Dashboard() {
           <CardHeader>
             <div className={styles.cardTitleRow}>
               <CardTitle>Despesas</CardTitle>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 19V5M5 12L12 19L19 12"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <TrendingDown size={24} />
             </div>
           </CardHeader>
           <CardContent>
@@ -154,21 +116,7 @@ export function Dashboard() {
           <CardHeader>
             <div className={styles.cardTitleRow}>
               <CardTitle>Saldo</CardTitle>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2V22M17 5H9.5C8.57174 5 7.6815 5.36875 7.02513 6.02513C6.36875 6.6815 6 7.57174 6 8.5C6 9.42826 6.36875 10.3185 7.02513 10.9749C7.6815 11.6313 8.57174 12 9.5 12H14.5C15.4283 12 16.3185 12.3687 16.9749 13.0251C17.6313 13.6815 18 14.5717 18 15.5C18 16.4283 17.6313 17.3185 16.9749 17.9749C16.3185 18.6313 15.4283 19 14.5 19H6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <DollarSign size={24} />
             </div>
           </CardHeader>
           <CardContent>

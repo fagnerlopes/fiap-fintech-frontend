@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 import styles from './Header.module.css';
 
@@ -12,35 +13,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       <div className={styles.container}>
         <div className={styles.left}>
           <button className={styles.menuButton} onClick={onMenuClick} aria-label="Toggle menu">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3 12H21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M3 6H21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M3 18H21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Menu size={24} />
           </button>
 
           <Link to="/dashboard" className={styles.logo}>
