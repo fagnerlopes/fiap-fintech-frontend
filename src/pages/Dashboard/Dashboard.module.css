@@ -102,6 +102,45 @@
   border-left: 4px solid var(--primary);
 }
 
+/* Transações Recentes */
+.transactions {
+  margin-bottom: 2rem;
+}
+
+.tipoReceita {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: oklch(0.65 0.20 145 / 0.15);
+  color: oklch(0.55 0.18 145);
+  border-radius: calc(var(--radius) * 0.75);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.tipoDespesa {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: oklch(0.577 0.245 27.325 / 0.15);
+  color: var(--destructive);
+  border-radius: calc(var(--radius) * 0.75);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.valorReceita {
+  color: oklch(0.55 0.18 145);
+  font-weight: 600;
+}
+
+.valorDespesa {
+  color: var(--destructive);
+  font-weight: 600;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .welcome h2 {
