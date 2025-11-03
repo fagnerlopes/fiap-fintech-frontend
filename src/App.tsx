@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { Login } from './pages/Login/Login';
 import { Dashboard } from './pages/Dashboard/Dashboard';
+import { ListaCategorias, FormularioCategoria } from './pages/Categorias';
 
 function App() {
   return (
@@ -16,6 +17,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/categorias"
+            element={
+              <ProtectedRoute>
+                <ListaCategorias />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/categorias/nova"
+            element={
+              <ProtectedRoute>
+                <FormularioCategoria />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/categorias/:id/editar"
+            element={
+              <ProtectedRoute>
+                <FormularioCategoria />
               </ProtectedRoute>
             }
           />

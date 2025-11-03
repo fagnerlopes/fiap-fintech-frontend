@@ -1,0 +1,99 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: oklch(var(--foreground));
+}
+
+.required {
+  color: oklch(var(--destructive));
+}
+
+.radioGroup {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: oklch(var(--foreground));
+}
+
+.radioLabel input[type='radio'] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: oklch(var(--primary));
+}
+
+.radioLabel:hover span {
+  color: oklch(var(--primary));
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid oklch(var(--border));
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: oklch(var(--destructive) / 0.1);
+  border: 1px solid oklch(var(--destructive));
+  border-radius: var(--radius);
+  color: oklch(var(--destructive));
+  font-size: 0.875rem;
+}
+
+.info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: oklch(var(--primary) / 0.1);
+  border-radius: var(--radius);
+  color: oklch(var(--primary));
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  .radioGroup {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+

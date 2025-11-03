@@ -1,0 +1,2 @@
+export { SubcategoriaList } from './SubcategoriaList';
+
