@@ -16,14 +16,12 @@ export function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Busca receitas e despesas ao carregar o componente (useEffect conforme o curso)
   useEffect(() => {
     const carregarDados = async () => {
       try {
         setIsLoading(true);
         setError('');
 
-        // Busca receitas e despesas em paralelo
         const [receitasData, despesasData] = await Promise.all([
           receitaService.listarTodas(),
           despesaService.listarTodas(),
@@ -40,18 +38,14 @@ export function Dashboard() {
     };
 
     carregarDados();
-  }, []); // Array vazio = executa apenas uma vez ao montar
+  }, []);
 
-  // Calcula o total de receitas
   const totalReceitas = receitas.reduce((acc, receita) => acc + receita.valor, 0);
 
-  // Calcula o total de despesas
   const totalDespesas = despesas.reduce((acc, despesa) => acc + despesa.valor, 0);
 
-  // Calcula o saldo
   const saldo = totalReceitas - totalDespesas;
 
-  // Formata valor em reais
   const formatarMoeda = (valor: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',

@@ -10,7 +10,6 @@ export function UserMenu() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Fecha o menu ao clicar fora (useEffect conforme o curso)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
