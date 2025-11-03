@@ -6,6 +6,7 @@ import { Button } from '../../components/Button/Button';
 import { Input } from '../../components/Input/Input';
 import { DataTable } from '../../components/DataTable/DataTable';
 import { RowActions } from '../../components/DataTable/RowActions';
+import { Pagination } from '../../components/Pagination/Pagination';
 import type { Action } from '../../components/DataTable/RowActions';
 import type { Column } from '../../types/table.types';
 import type { Despesa } from '../../types/despesa.types';
@@ -20,7 +21,6 @@ const ITEMS_PER_PAGE = 20;
 export function ListaDespesas() {
   const navigate = useNavigate();
   const [despesas, setDespesas] = useState<Despesa[]>([]);
-  const [filteredDespesas, setFilteredDespesas] = useState<Despesa[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,66 +31,65 @@ export function ListaDespesas() {
   const [categoriaId, setCategoriaId] = useState<string>('');
   const [statusPendente, setStatusPendente] = useState<string>('todas');
   
-  // Paginação
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // Paginação (state do backend)
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
+  // Carregar categorias apenas uma vez
   useEffect(() => {
-    carregarDados();
+    carregarCategorias();
   }, []);
 
+  // Carregar despesas sempre que filtros ou página mudarem
   useEffect(() => {
-    aplicarFiltros();
-  }, [despesas, dataInicio, dataFim, categoriaId, statusPendente]);
+    carregarDespesas();
+  }, [currentPage, dataInicio, dataFim, categoriaId, statusPendente]);
 
-  const carregarDados = async () => {
-    setIsLoading(true);
-    setError(null);
+  const carregarCategorias = async () => {
     try {
-      const [despesasData, categoriasData] = await Promise.all([
-        despesaService.listarTodas(),
-        categoriaService.listarPorTipo('DESPESA'),
-      ]);
-      setDespesas(despesasData);
-      setCategorias(categoriasData);
+      const data = await categoriaService.listarPorTipo('DESPESA');
+      setCategorias(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar despesas');
-    } finally {
-      setIsLoading(false);
+      console.error('Erro ao carregar categorias:', err);
     }
   };
 
-  const aplicarFiltros = () => {
-    let filtered = [...despesas];
+  const carregarDespesas = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params: {
+        dataInicio?: string;
+        dataFim?: string;
+        idCategoria?: number;
+        pendente?: number;
+        page: number;
+        size: number;
+      } = {
+        page: currentPage,
+        size: ITEMS_PER_PAGE,
+      };
 
-    // Filtro por período
-    if (dataInicio) {
-      filtered = filtered.filter((d) => d.dataVencimento >= dataInicio);
+      if (dataInicio) params.dataInicio = dataInicio;
+      if (dataFim) params.dataFim = dataFim;
+      if (categoriaId) params.idCategoria = Number(categoriaId);
+      if (statusPendente === 'pendentes') params.pendente = 1;
+      if (statusPendente === 'pagas') params.pendente = 0;
+
+      const response = await despesaService.listarComFiltros(params);
+      
+      setDespesas(response.content);
+      setTotalPages(response.totalPages);
+      setTotalElements(response.totalElements);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar despesas');
+      setDespesas([]);
+      setTotalPages(0);
+      setTotalElements(0);
+    } finally {
+      setIsLoading(false);
     }
-    if (dataFim) {
-      filtered = filtered.filter((d) => d.dataVencimento <= dataFim);
-    }
-
-    // Filtro por categoria
-    if (categoriaId) {
-      filtered = filtered.filter(
-        (d) => d.categoria?.idCategoria === Number(categoriaId)
-      );
-    }
-
-    // Filtro por status pendente
-    if (statusPendente === 'pendentes') {
-      filtered = filtered.filter((d) => d.pendente === 1);
-    } else if (statusPendente === 'pagas') {
-      filtered = filtered.filter((d) => d.pendente === 0);
-    }
-
-    // Ordenar por data mais recente
-    filtered.sort((a, b) => new Date(b.dataVencimento).getTime() - new Date(a.dataVencimento).getTime());
-
-    setFilteredDespesas(filtered);
-    setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE));
-    setCurrentPage(1);
   };
 
   const limparFiltros = () => {
@@ -98,6 +97,11 @@ export function ListaDespesas() {
     setDataFim('');
     setCategoriaId('');
     setStatusPendente('todas');
+    setCurrentPage(0);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleEditar = (id: number) => {
@@ -114,7 +118,8 @@ export function ListaDespesas() {
 
     try {
       await despesaService.deletar(id);
-      setDespesas(despesas.filter((d) => d.idDespesa !== id));
+      // Recarregar a página atual após exclusão
+      carregarDespesas();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao excluir despesa');
     }
@@ -188,13 +193,7 @@ export function ListaDespesas() {
     return <RowActions actions={actions} />;
   };
 
-  // Paginação client-side
-  const paginatedDespesas = filteredDespesas.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const totalDespesas = filteredDespesas.reduce((sum, d) => sum + d.valor, 0);
+  const totalDespesas = despesas.reduce((sum, d) => sum + d.valor, 0);
 
   return (
     <Layout>
@@ -205,7 +204,7 @@ export function ListaDespesas() {
               <div>
                 <CardTitle>Despesas</CardTitle>
                 <p className={styles.subtitle}>
-                  {filteredDespesas.length} despesa(s) • Total: {formatCurrency(totalDespesas)}
+                  {totalElements} despesa(s) • Total da página: {formatCurrency(totalDespesas)}
                 </p>
               </div>
               <Button onClick={() => navigate('/despesas/nova')}>
@@ -287,38 +286,24 @@ export function ListaDespesas() {
 
             {isLoading ? (
               <div className={styles.loading}>Carregando despesas...</div>
-            ) : filteredDespesas.length === 0 ? (
+            ) : despesas.length === 0 ? (
               <div className={styles.empty}>Nenhuma despesa encontrada.</div>
             ) : (
               <>
                 <DataTable
-                  data={paginatedDespesas}
+                  data={despesas}
                   columns={columns}
                   renderActions={renderActions}
                 />
 
                 {/* Paginação */}
-                {totalPages > 1 && (
-                  <div className={styles.pagination}>
-                    <button
-                      className={styles.paginationButton}
-                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                    >
-                      Anterior
-                    </button>
-                    <span className={styles.paginationInfo}>
-                      Página {currentPage} de {totalPages}
-                    </span>
-                    <button
-                      className={styles.paginationButton}
-                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                    >
-                      Próxima
-                    </button>
-                  </div>
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalElements={totalElements}
+                  pageSize={ITEMS_PER_PAGE}
+                  onPageChange={handlePageChange}
+                />
               </>
             )}
           </CardContent>

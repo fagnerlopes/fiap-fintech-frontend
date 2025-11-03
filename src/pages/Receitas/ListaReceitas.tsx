@@ -6,6 +6,7 @@ import { Button } from '../../components/Button/Button';
 import { Input } from '../../components/Input/Input';
 import { DataTable } from '../../components/DataTable/DataTable';
 import { RowActions } from '../../components/DataTable/RowActions';
+import { Pagination } from '../../components/Pagination/Pagination';
 import type { Action } from '../../components/DataTable/RowActions';
 import type { Column } from '../../types/table.types';
 import type { Receita } from '../../types/receita.types';
@@ -20,7 +21,6 @@ const ITEMS_PER_PAGE = 20;
 export function ListaReceitas() {
   const navigate = useNavigate();
   const [receitas, setReceitas] = useState<Receita[]>([]);
-  const [filteredReceitas, setFilteredReceitas] = useState<Receita[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,66 +31,65 @@ export function ListaReceitas() {
   const [categoriaId, setCategoriaId] = useState<string>('');
   const [statusPendente, setStatusPendente] = useState<string>('todas');
   
-  // Paginação
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // Paginação (state do backend)
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
+  // Carregar categorias apenas uma vez
   useEffect(() => {
-    carregarDados();
+    carregarCategorias();
   }, []);
 
+  // Carregar receitas sempre que filtros ou página mudarem
   useEffect(() => {
-    aplicarFiltros();
-  }, [receitas, dataInicio, dataFim, categoriaId, statusPendente]);
+    carregarReceitas();
+  }, [currentPage, dataInicio, dataFim, categoriaId, statusPendente]);
 
-  const carregarDados = async () => {
-    setIsLoading(true);
-    setError(null);
+  const carregarCategorias = async () => {
     try {
-      const [receitasData, categoriasData] = await Promise.all([
-        receitaService.listarTodas(),
-        categoriaService.listarPorTipo('RECEITA'),
-      ]);
-      setReceitas(receitasData);
-      setCategorias(categoriasData);
+      const data = await categoriaService.listarPorTipo('RECEITA');
+      setCategorias(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar receitas');
-    } finally {
-      setIsLoading(false);
+      console.error('Erro ao carregar categorias:', err);
     }
   };
 
-  const aplicarFiltros = () => {
-    let filtered = [...receitas];
+  const carregarReceitas = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params: {
+        dataInicio?: string;
+        dataFim?: string;
+        idCategoria?: number;
+        pendente?: number;
+        page: number;
+        size: number;
+      } = {
+        page: currentPage,
+        size: ITEMS_PER_PAGE,
+      };
 
-    // Filtro por período
-    if (dataInicio) {
-      filtered = filtered.filter((r) => r.dataEntrada >= dataInicio);
+      if (dataInicio) params.dataInicio = dataInicio;
+      if (dataFim) params.dataFim = dataFim;
+      if (categoriaId) params.idCategoria = Number(categoriaId);
+      if (statusPendente === 'pendentes') params.pendente = 1;
+      if (statusPendente === 'recebidas') params.pendente = 0;
+
+      const response = await receitaService.listarComFiltros(params);
+      
+      setReceitas(response.content);
+      setTotalPages(response.totalPages);
+      setTotalElements(response.totalElements);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar receitas');
+      setReceitas([]);
+      setTotalPages(0);
+      setTotalElements(0);
+    } finally {
+      setIsLoading(false);
     }
-    if (dataFim) {
-      filtered = filtered.filter((r) => r.dataEntrada <= dataFim);
-    }
-
-    // Filtro por categoria
-    if (categoriaId) {
-      filtered = filtered.filter(
-        (r) => r.categoria?.idCategoria === Number(categoriaId)
-      );
-    }
-
-    // Filtro por status pendente
-    if (statusPendente === 'pendentes') {
-      filtered = filtered.filter((r) => r.pendente === 1);
-    } else if (statusPendente === 'recebidas') {
-      filtered = filtered.filter((r) => r.pendente === 0);
-    }
-
-    // Ordenar por data mais recente
-    filtered.sort((a, b) => new Date(b.dataEntrada).getTime() - new Date(a.dataEntrada).getTime());
-
-    setFilteredReceitas(filtered);
-    setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE));
-    setCurrentPage(1);
   };
 
   const limparFiltros = () => {
@@ -98,6 +97,11 @@ export function ListaReceitas() {
     setDataFim('');
     setCategoriaId('');
     setStatusPendente('todas');
+    setCurrentPage(0);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleEditar = (id: number) => {
@@ -114,7 +118,8 @@ export function ListaReceitas() {
 
     try {
       await receitaService.deletar(id);
-      setReceitas(receitas.filter((r) => r.idReceita !== id));
+      // Recarregar a página atual após exclusão
+      carregarReceitas();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao excluir receita');
     }
@@ -188,13 +193,7 @@ export function ListaReceitas() {
     return <RowActions actions={actions} />;
   };
 
-  // Paginação client-side
-  const paginatedReceitas = filteredReceitas.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const totalReceitas = filteredReceitas.reduce((sum, r) => sum + r.valor, 0);
+  const totalReceitas = receitas.reduce((sum, r) => sum + r.valor, 0);
 
   return (
     <Layout>
@@ -205,7 +204,7 @@ export function ListaReceitas() {
               <div>
                 <CardTitle>Receitas</CardTitle>
                 <p className={styles.subtitle}>
-                  {filteredReceitas.length} receita(s) • Total: {formatCurrency(totalReceitas)}
+                  {totalElements} receita(s) • Total da página: {formatCurrency(totalReceitas)}
                 </p>
               </div>
               <Button onClick={() => navigate('/receitas/nova')}>
@@ -287,38 +286,24 @@ export function ListaReceitas() {
 
             {isLoading ? (
               <div className={styles.loading}>Carregando receitas...</div>
-            ) : filteredReceitas.length === 0 ? (
+            ) : receitas.length === 0 ? (
               <div className={styles.empty}>Nenhuma receita encontrada.</div>
             ) : (
               <>
                 <DataTable
-                  data={paginatedReceitas}
+                  data={receitas}
                   columns={columns}
                   renderActions={renderActions}
                 />
 
                 {/* Paginação */}
-                {totalPages > 1 && (
-                  <div className={styles.pagination}>
-                    <button
-                      className={styles.paginationButton}
-                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                    >
-                      Anterior
-                    </button>
-                    <span className={styles.paginationInfo}>
-                      Página {currentPage} de {totalPages}
-                    </span>
-                    <button
-                      className={styles.paginationButton}
-                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                    >
-                      Próxima
-                    </button>
-                  </div>
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalElements={totalElements}
+                  pageSize={ITEMS_PER_PAGE}
+                  onPageChange={handlePageChange}
+                />
               </>
             )}
           </CardContent>

@@ -1,5 +1,6 @@
 import { httpClient } from './httpClient';
 import type { Despesa, DespesaCreateRequest, DespesaUpdateRequest } from '../types/despesa.types';
+import type { PageResponse } from '../types/pagination.types';
 
 export const despesaService = {
   /**
@@ -52,6 +53,32 @@ export const despesaService = {
    */
   async deletar(id: number): Promise<void> {
     return httpClient.delete<void>(`/despesas/${id}`, true);
+  },
+
+  /**
+   * Lista despesas com filtros e paginação
+   */
+  async listarComFiltros(params: {
+    dataInicio?: string;
+    dataFim?: string;
+    idCategoria?: number;
+    pendente?: number;
+    page?: number;
+    size?: number;
+  }): Promise<PageResponse<Despesa>> {
+    const queryParams = new URLSearchParams();
+
+    if (params.dataInicio) queryParams.append('dataInicio', params.dataInicio);
+    if (params.dataFim) queryParams.append('dataFim', params.dataFim);
+    if (params.idCategoria) queryParams.append('idCategoria', params.idCategoria.toString());
+    if (params.pendente !== undefined) queryParams.append('pendente', params.pendente.toString());
+    if (params.page !== undefined) queryParams.append('page', params.page.toString());
+    if (params.size !== undefined) queryParams.append('size', params.size.toString());
+
+    const query = queryParams.toString();
+    const endpoint = query ? `/despesas?${query}` : '/despesas';
+
+    return httpClient.get<PageResponse<Despesa>>(endpoint, true);
   },
 };
 
