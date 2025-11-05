@@ -76,15 +76,6 @@ A autenticação utiliza **JWT** e **useContext** para gerenciamento de estado g
 - ✅ Logout
 - ✅ Exibição de informações do usuário
 
-## Próximos Passos
-
-- [ ] CRUD de Receitas
-- [ ] CRUD de Despesas
-- [ ] CRUD de Categorias
-- [ ] Filtros e pesquisa
-- [ ] Gráficos e relatórios
-- [ ] Página de registro
-
 ## Conceitos do Curso Aplicados
 
 Este projeto segue os conceitos ensinados no curso:
