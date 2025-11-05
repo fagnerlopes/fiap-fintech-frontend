@@ -5,7 +5,7 @@ Frontend da aplicação de gestão financeira desenvolvida como projeto acadêmi
 ## Tecnologias
 
 - **React 19** + **TypeScript**
-- **Vite** (Build tool)
+- **Vite** (Build tool )
 - **React Router DOM** (Navegação SPA)
 - **CSS Modules** (Estilização com escopo local)
 - **Fetch API** (Requisições HTTP)
